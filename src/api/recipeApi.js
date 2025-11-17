@@ -41,6 +41,16 @@ export const getRecipeById = async (id) => {
 };
 
 /**
+ * Get a single recipe by slug (SEO-friendly URL)
+ * @param {string} slug - Recipe slug
+ * @returns {Promise<Object>} ApiResponse with recipe data
+ */
+export const getRecipeBySlug = async (slug) => {
+  const response = await apiClient.get(`/recipespark/recipes/slug/${slug}`);
+  return response.data;
+};
+
+/**
  * Create a new recipe
  * @param {Object} recipe - Recipe data
  * @returns {Promise<Object>} ApiResponse with created recipe

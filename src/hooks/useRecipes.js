@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getRecipes, getRecipeById } from '../api/recipeApi';
+import { getRecipes, getRecipeById, getRecipeBySlug } from '../api/recipeApi';
 
 /**
  * Hook to fetch paginated recipes with optional filtering
@@ -19,5 +19,16 @@ export const useRecipe = (id) => {
     queryKey: ['recipe', id],
     queryFn: () => getRecipeById(id),
     enabled: !!id, // Only run if ID is provided
+  });
+};
+
+/**
+ * Hook to fetch a single recipe by slug (SEO-friendly URL)
+ */
+export const useRecipeBySlug = (slug) => {
+  return useQuery({
+    queryKey: ['recipe', 'slug', slug],
+    queryFn: () => getRecipeBySlug(slug),
+    enabled: !!slug, // Only run if slug is provided
   });
 };

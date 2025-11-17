@@ -17,6 +17,11 @@ export const generateRecipeSchema = (recipe) => {
     description: recipe.description || '',
   };
 
+  // Add canonical URL using slug for SEO
+  if (recipe.slug) {
+    schema.url = `https://mechanicsofmotherhood.com/recipes/${recipe.slug}`;
+  }
+
   // Add author if available
   if (recipe.authorNM) {
     schema.author = {

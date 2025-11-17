@@ -16,6 +16,7 @@ vi.mock('react-router-dom', async () => {
 
 const mockRecipe = {
   id: 1,
+  slug: 'chocolate-chip-cookies',
   name: 'Chocolate Chip Cookies',
   description: 'Delicious homemade cookies',
   servings: 24,
@@ -79,7 +80,7 @@ describe('RecipeCard Component', () => {
       const card = screen.getByRole('button')
       await user.click(card)
 
-      expect(mockNavigate).toHaveBeenCalledWith('/recipes/1')
+      expect(mockNavigate).toHaveBeenCalledWith('/recipes/chocolate-chip-cookies')
     })
 
     it('is keyboard accessible', async () => {
@@ -90,7 +91,7 @@ describe('RecipeCard Component', () => {
       card.focus()
       await user.keyboard('{Enter}')
 
-      expect(mockNavigate).toHaveBeenCalledWith('/recipes/1')
+      expect(mockNavigate).toHaveBeenCalledWith('/recipes/chocolate-chip-cookies')
     })
 
     it('has hover effect', () => {
@@ -136,13 +137,13 @@ describe('RecipeCard Component', () => {
     })
 
     it('handles recipe with ID 0', () => {
-      const recipeWithZeroId = { ...mockRecipe, id: 0 }
+      const recipeWithZeroId = { ...mockRecipe, id: 0, slug: 'zero-id-recipe' }
       renderWithRouter(<RecipeCard recipe={recipeWithZeroId} />)
 
       const card = screen.getByRole('button')
       card.click()
 
-      expect(mockNavigate).toHaveBeenCalledWith('/recipes/0')
+      expect(mockNavigate).toHaveBeenCalledWith('/recipes/zero-id-recipe')
     })
   })
 })

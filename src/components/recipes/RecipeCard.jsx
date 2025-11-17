@@ -7,7 +7,7 @@ const RecipeCard = ({ recipe }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/recipes/${recipe.id}`);
+    navigate(`/recipes/${recipe.slug}`);
   };
 
   // Strip markdown from description for preview

@@ -114,8 +114,11 @@ async function generateSitemap() {
       ? formatDate(new Date(recipe.modifiedDT))
       : now;
 
+    // Use slug for SEO-friendly URLs, fallback to id if slug doesn't exist
+    const recipeSlug = recipe.slug || recipe.id;
+
     urls.push(generateUrlEntry(
-      `${SITE_URL}/recipes/${recipe.id}`,
+      `${SITE_URL}/recipes/${recipeSlug}`,
       lastmod,
       'weekly',
       '0.8'

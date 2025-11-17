@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useRecipe } from '../hooks/useRecipes';
+import { useRecipeBySlug } from '../hooks/useRecipes';
 import RecipeDetails from '../components/recipes/RecipeDetails';
 import Button from '../components/common/Button';
 import SEO from '../components/seo/SEO';
@@ -9,9 +9,9 @@ import { generateRecipeSchema } from '../utils/schemaGenerator';
 import { stripMarkdown } from '../utils/markdown';
 
 const RecipeDetailPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
-  const { data: recipeData, isLoading, error } = useRecipe(id);
+  const { data: recipeData, isLoading, error } = useRecipeBySlug(slug);
 
   const recipe = recipeData?.data;
 
@@ -33,7 +33,7 @@ const RecipeDetailPage = () => {
       <SEO
         title={seoTitle}
         description={seoDescription}
-        canonical={`/recipes/${id}`}
+        canonical={`/recipes/${slug}`}
         type="article"
         keywords={seoKeywords}
         author={recipe?.authorNM}

@@ -16,7 +16,7 @@ const AppRoutes = () => {
 
       {/* Recipe Routes */}
       <Route path="/recipes" element={<RecipeListPage />} />
-      <Route path="/recipes/:id" element={<RecipeDetailPage />} />
+      <Route path="/recipes/:slug" element={<RecipeDetailPage />} />
 
       {/* Generic CMS Page - Catch-all for dynamic pages */}
       <Route path="*" element={<GenericCmsPage />} />
