@@ -74,7 +74,7 @@ const GenericCmsPage = () => {
     return text.substring(0, 160);
   };
 
-  const seoDescription = extractDescription(menuItem.pageContent);
+  const seoDescription = extractDescription(menuItem.content);
 
   return (
     <>
@@ -84,7 +84,7 @@ const GenericCmsPage = () => {
         canonical={location.pathname}
       />
       <CmsPageRenderer
-        content={menuItem.pageContent}
+        content={menuItem.content}
         title={menuItem.title}
       />
     </>
