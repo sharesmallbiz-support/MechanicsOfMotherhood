@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { useRecipes } from '../hooks/useRecipes';
 import RecipeList from '../components/recipes/RecipeList';
 import useWebsiteConfig from '../hooks/useWebsiteConfig';
+import SEO from '../components/seo/SEO';
+import SchemaMarkup from '../components/seo/SchemaMarkup';
+import { generateOrganizationSchema, generateWebSiteSchema } from '../utils/schemaGenerator';
 
 const HomePage = () => {
   const { data: websiteData } = useWebsiteConfig();
@@ -11,38 +14,61 @@ const HomePage = () => {
   const websiteConfig = websiteData?.data;
   const recipes = recipesData?.data || [];
 
-  return (
-    <div className="space-y-8">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-12 text-white">
-        <h1 className="text-5xl font-bold mb-4">
-          {websiteConfig?.websiteTitle || 'Mechanics of Motherhood'}
-        </h1>
-        <p className="text-xl mb-6">
-          {websiteConfig?.description || 'Discover delicious recipes and cooking inspiration'}
-        </p>
-        <Link
-          to="/recipes"
-          className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
-        >
-          Explore All Recipes
-        </Link>
-      </div>
+  // Generate schemas for homepage
+  const organizationSchema = generateOrganizationSchema(websiteConfig);
+  const websiteSchema = generateWebSiteSchema();
 
-      {/* Featured Recipes Section */}
-      <div>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">Featured Recipes</h2>
+  const seoDescription =
+    websiteConfig?.description || 'Discover delicious family recipes and cooking tips for busy moms. Browse our collection of easy, wholesome meals the whole family will love.';
+
+  return (
+    <>
+      {/* SEO Meta Tags */}
+      <SEO
+        title="Mechanics of Motherhood"
+        description={seoDescription}
+        canonical="/"
+        keywords={['recipes', 'cooking', 'family meals', 'motherhood', 'home cooking', 'easy recipes']}
+      />
+
+      {/* Organization Schema */}
+      <SchemaMarkup schema={organizationSchema} />
+
+      {/* Website Schema with Search */}
+      <SchemaMarkup schema={websiteSchema} />
+
+      <div className="space-y-8">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-12 text-white">
+          <h1 className="text-5xl font-bold mb-4">
+            {websiteConfig?.websiteTitle || 'Mechanics of Motherhood'}
+          </h1>
+          <p className="text-xl mb-6">
+            {websiteConfig?.description || 'Discover delicious recipes and cooking inspiration'}
+          </p>
           <Link
             to="/recipes"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
           >
-            View All →
+            Explore All Recipes
           </Link>
         </div>
-        <RecipeList recipes={recipes} isLoading={isLoading} error={error} />
+
+        {/* Featured Recipes Section */}
+        <div>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-3xl font-bold text-gray-900">Featured Recipes</h2>
+            <Link
+              to="/recipes"
+              className="text-blue-600 hover:text-blue-800 font-medium"
+            >
+              View All →
+            </Link>
+          </div>
+          <RecipeList recipes={recipes} isLoading={isLoading} error={error} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import queryClient from './store/queryClient';
 import Layout from './components/layout/Layout';
 import AppRoutes from './routes/AppRoutes';
@@ -60,11 +61,13 @@ const AppContent = () => {
  */
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <AppContent />
-      </Router>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AppContent />
+        </Router>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://mechanicsofmotherhood.com</loc>
+    <lastmod>2025-11-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://mechanicsofmotherhood.com/recipes</loc>
+    <lastmod>2025-11-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!--
+    This is a basic static sitemap.
+    To generate a dynamic sitemap with all recipes, run:
+    npm run generate-sitemap
+
+    For production, integrate this into your build process or
+    set up automated updates when content changes.
+  -->
+</urlset>

@@ -5,6 +5,7 @@ import useAppStore from '../store/appStore';
 import CmsPageRenderer from '../components/cms/CmsPageRenderer';
 import Spinner from '../components/common/Spinner';
 import ErrorMessage from '../components/common/ErrorMessage';
+import SEO from '../components/seo/SEO';
 
 const GenericCmsPage = () => {
   const location = useLocation();
@@ -51,18 +52,42 @@ const GenericCmsPage = () => {
 
   if (!menuItem) {
     return (
-      <div className="text-center py-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">404 - Page Not Found</h1>
-        <p className="text-gray-600">The page you are looking for does not exist.</p>
-      </div>
+      <>
+        <SEO
+          title="Page Not Found"
+          description="The page you are looking for does not exist."
+          noindex={true}
+        />
+        <div className="text-center py-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">404 - Page Not Found</h1>
+          <p className="text-gray-600">The page you are looking for does not exist.</p>
+        </div>
+      </>
     );
   }
 
+  // Extract plain text from HTML content for meta description
+  const extractDescription = (html) => {
+    if (!html) return '';
+    // Remove HTML tags and get first 160 characters
+    const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return text.substring(0, 160);
+  };
+
+  const seoDescription = extractDescription(menuItem.pageContent);
+
   return (
-    <CmsPageRenderer
-      content={menuItem.pageContent}
-      title={menuItem.title}
-    />
+    <>
+      <SEO
+        title={menuItem.title}
+        description={seoDescription}
+        canonical={location.pathname}
+      />
+      <CmsPageRenderer
+        content={menuItem.pageContent}
+        title={menuItem.title}
+      />
+    </>
   );
 };
 
