@@ -1,32 +1,23 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useRecipeBySlug, useRecipe } from '../hooks/useRecipes';
+import { useRecipe } from '../hooks/useRecipes';
 import RecipeDetails from '../components/recipes/RecipeDetails';
 import Button from '../components/common/Button';
 import SEO from '../components/seo/SEO';
 import SchemaMarkup from '../components/seo/SchemaMarkup';
 import { generateRecipeSchema } from '../utils/schemaGenerator';
 import { stripMarkdown } from '../utils/markdown';
+import { extractIdFromSlug, getUniqueRecipeSlug } from '../utils/slugify';
 
 const RecipeDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  // Check if the parameter is a numeric ID or a slug
-  const isNumericId = /^\d+$/.test(slug);
+  // Extract recipe ID from slug (e.g., "chocolate-cookies-123" -> 123)
+  const recipeId = extractIdFromSlug(slug);
 
-  // Use appropriate hook based on parameter type
-  const { data: recipeDataBySlug, isLoading: isLoadingSlug, error: errorSlug } = useRecipeBySlug(
-    isNumericId ? null : slug
-  );
-  const { data: recipeDataById, isLoading: isLoadingId, error: errorId } = useRecipe(
-    isNumericId ? slug : null
-  );
-
-  // Use the appropriate data source
-  const recipeData = isNumericId ? recipeDataById : recipeDataBySlug;
-  const isLoading = isNumericId ? isLoadingId : isLoadingSlug;
-  const error = isNumericId ? errorId : errorSlug;
+  // Fetch recipe by ID
+  const { data: recipeData, isLoading, error } = useRecipe(recipeId);
 
   const recipe = recipeData?.data;
 
@@ -42,8 +33,8 @@ const RecipeDetailPage = () => {
   const seoKeywords = recipe?.tags || ['recipe', 'cooking', 'family meals'];
   const recipeSchema = recipe ? generateRecipeSchema(recipe) : null;
 
-  // Use slug from recipe data if available for canonical URL, otherwise use URL parameter
-  const canonicalSlug = recipe?.slug || slug;
+  // Generate canonical slug from recipe data for consistent URLs
+  const canonicalSlug = recipe ? getUniqueRecipeSlug(recipe) : slug;
 
   return (
     <>

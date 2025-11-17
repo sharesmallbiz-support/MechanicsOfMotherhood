@@ -17,6 +17,27 @@ import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+// Import slugify utility (use simple version for Node.js)
+const slugify = (text) => {
+  if (!text) return '';
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/'/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
+const getUniqueRecipeSlug = (recipe) => {
+  if (!recipe) return '';
+  if (recipe.slug) return recipe.slug;
+  const baseSlug = recipe.name ? slugify(recipe.name) : '';
+  return `${baseSlug}-${recipe.id}`;
+};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -114,8 +135,8 @@ async function generateSitemap() {
       ? formatDate(new Date(recipe.modifiedDT))
       : now;
 
-    // Use slug for SEO-friendly URLs, fallback to id if slug doesn't exist
-    const recipeSlug = recipe.slug || recipe.id;
+    // Generate SEO-friendly slug from recipe name
+    const recipeSlug = getUniqueRecipeSlug(recipe);
 
     urls.push(generateUrlEntry(
       `${SITE_URL}/recipes/${recipeSlug}`,

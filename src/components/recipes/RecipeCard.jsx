@@ -2,14 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../common/Card';
 import { getMarkdownPreview } from '../../utils/markdown';
+import { getUniqueRecipeSlug } from '../../utils/slugify';
 
 const RecipeCard = ({ recipe }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // Use slug if available, fallback to id for backward compatibility
-    const recipeIdentifier = recipe.slug || recipe.id;
-    navigate(`/recipes/${recipeIdentifier}`);
+    // Generate SEO-friendly slug from recipe name
+    const slug = getUniqueRecipeSlug(recipe);
+    navigate(`/recipes/${slug}`);
   };
 
   // Strip markdown from description for preview

@@ -2,6 +2,8 @@
  * Utility functions for generating Schema.org JSON-LD structured data
  */
 
+import { getUniqueRecipeSlug } from './slugify';
+
 /**
  * Generate Recipe schema for rich search results
  * @param {Object} recipe - Recipe data object
@@ -17,9 +19,10 @@ export const generateRecipeSchema = (recipe) => {
     description: recipe.description || '',
   };
 
-  // Add canonical URL using slug for SEO
-  if (recipe.slug) {
-    schema.url = `https://mechanicsofmotherhood.com/recipes/${recipe.slug}`;
+  // Add canonical URL using generated slug for SEO
+  const slug = getUniqueRecipeSlug(recipe);
+  if (slug) {
+    schema.url = `https://mechanicsofmotherhood.com/recipes/${slug}`;
   }
 
   // Add author if available
