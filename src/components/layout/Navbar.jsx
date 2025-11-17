@@ -14,7 +14,7 @@ const Navbar = () => {
   const menuItems = menuData?.data?.items || [];
 
   // Filter menu items for navigation
-  const navItems = menuItems.filter((item) => item.displayInNavigation);
+  const navItems = menuItems.filter((item) => item.display_navigation);
 
   // Build hierarchical structure
   const buildMenuTree = () => {
