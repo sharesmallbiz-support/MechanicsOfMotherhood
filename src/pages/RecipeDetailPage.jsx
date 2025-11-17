@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useRecipe } from '../hooks/useRecipes';
 import RecipeDetails from '../components/recipes/RecipeDetails';
+import PrintableRecipe from '../components/recipes/PrintableRecipe';
 import Button from '../components/common/Button';
 import SEO from '../components/seo/SEO';
 import SchemaMarkup from '../components/seo/SchemaMarkup';
@@ -12,6 +13,7 @@ import { extractIdFromSlug, getUniqueRecipeSlug } from '../utils/slugify';
 const RecipeDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [showPrintView, setShowPrintView] = useState(false);
 
   // Extract recipe ID from slug (e.g., "chocolate-cookies-123" -> 123)
   const recipeId = extractIdFromSlug(slug);
@@ -53,13 +55,28 @@ const RecipeDetailPage = () => {
       {recipeSchema && <SchemaMarkup schema={recipeSchema} />}
 
       <div className="space-y-6">
-        {/* Back Button */}
-        <Button onClick={handleBack} variant="outline">
-          ← Back to Recipes
-        </Button>
+        {/* Back Button and Print Toggle */}
+        <div className="flex flex-wrap gap-4">
+          <Button onClick={handleBack} variant="outline">
+            ← Back to Recipes
+          </Button>
 
-        {/* Recipe Details */}
-        <RecipeDetails recipe={recipe} isLoading={isLoading} error={error} />
+          {recipe && !isLoading && !error && (
+            <Button
+              onClick={() => setShowPrintView(!showPrintView)}
+              variant={showPrintView ? 'primary' : 'outline'}
+            >
+              {showPrintView ? '← View Recipe' : '🖨️ Print Recipe'}
+            </Button>
+          )}
+        </div>
+
+        {/* Show either print view or regular view */}
+        {showPrintView ? (
+          <PrintableRecipe recipe={recipe} />
+        ) : (
+          <RecipeDetails recipe={recipe} isLoading={isLoading} error={error} />
+        )}
       </div>
     </>
   );
