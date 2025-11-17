@@ -11,7 +11,7 @@ const Navbar = () => {
   const { data: menuData } = useMenuHierarchy();
 
   const websiteConfig = websiteData?.data;
-  const menuItems = menuData?.data || [];
+  const menuItems = menuData?.data?.items || [];
 
   // Filter menu items for navigation
   const navItems = menuItems.filter((item) => item.displayInNavigation);
