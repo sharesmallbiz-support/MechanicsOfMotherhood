@@ -7,7 +7,9 @@ const RecipeCard = ({ recipe }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/recipes/${recipe.slug}`);
+    // Use slug if available, fallback to id for backward compatibility
+    const recipeIdentifier = recipe.slug || recipe.id;
+    navigate(`/recipes/${recipeIdentifier}`);
   };
 
   // Strip markdown from description for preview

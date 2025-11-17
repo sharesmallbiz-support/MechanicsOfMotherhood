@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useRecipeBySlug } from '../hooks/useRecipes';
+import { useRecipeBySlug, useRecipe } from '../hooks/useRecipes';
 import RecipeDetails from '../components/recipes/RecipeDetails';
 import Button from '../components/common/Button';
 import SEO from '../components/seo/SEO';
@@ -11,7 +11,22 @@ import { stripMarkdown } from '../utils/markdown';
 const RecipeDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { data: recipeData, isLoading, error } = useRecipeBySlug(slug);
+
+  // Check if the parameter is a numeric ID or a slug
+  const isNumericId = /^\d+$/.test(slug);
+
+  // Use appropriate hook based on parameter type
+  const { data: recipeDataBySlug, isLoading: isLoadingSlug, error: errorSlug } = useRecipeBySlug(
+    isNumericId ? null : slug
+  );
+  const { data: recipeDataById, isLoading: isLoadingId, error: errorId } = useRecipe(
+    isNumericId ? slug : null
+  );
+
+  // Use the appropriate data source
+  const recipeData = isNumericId ? recipeDataById : recipeDataBySlug;
+  const isLoading = isNumericId ? isLoadingId : isLoadingSlug;
+  const error = isNumericId ? errorId : errorSlug;
 
   const recipe = recipeData?.data;
 
@@ -27,13 +42,16 @@ const RecipeDetailPage = () => {
   const seoKeywords = recipe?.tags || ['recipe', 'cooking', 'family meals'];
   const recipeSchema = recipe ? generateRecipeSchema(recipe) : null;
 
+  // Use slug from recipe data if available for canonical URL, otherwise use URL parameter
+  const canonicalSlug = recipe?.slug || slug;
+
   return (
     <>
       {/* SEO Meta Tags */}
       <SEO
         title={seoTitle}
         description={seoDescription}
-        canonical={`/recipes/${slug}`}
+        canonical={`/recipes/${canonicalSlug}`}
         type="article"
         keywords={seoKeywords}
         author={recipe?.authorNM}
