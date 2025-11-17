@@ -28,6 +28,8 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       sourcemap: mode !== 'production',
+      // Bundle size budget warnings
+      chunkSizeWarningLimit: 500, // 500 KB warning
       rollupOptions: {
         output: {
           manualChunks: {
@@ -35,6 +37,23 @@ export default defineConfig(({ mode }) => {
             'query-vendor': ['@tanstack/react-query'],
             'ui-vendor': ['zustand', 'axios'],
           },
+        },
+        onwarn(warning, warn) {
+          // Warn about large chunks
+          if (warning.code === 'CHUNK_SIZE_EXCEEDED') {
+            console.warn(`⚠️  Bundle size warning: ${warning.message}`)
+          }
+          warn(warning)
+        },
+      },
+      // Target modern browsers for smaller bundles
+      target: 'es2020',
+      // Minification options
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: mode === 'production',
+          drop_debugger: true,
         },
       },
     },
