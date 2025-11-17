@@ -130,7 +130,8 @@ describe('RecipeCard Component', () => {
         description: 'A very long description that goes on and on with lots of details about the recipe and how delicious it is and why you should make it',
       }
       renderWithRouter(<RecipeCard recipe={longDescRecipe} />)
-      const descElement = screen.getByText(longDescRecipe.description)
+      // Description should be truncated with ellipsis
+      const descElement = screen.getByText(/A very long description that goes on and on with lots of details about the recipe and how delicious it is and why you\.\.\./)
       expect(descElement).toHaveClass('line-clamp-3')
     })
 

@@ -2,6 +2,7 @@ import React from 'react';
 import Spinner from '../common/Spinner';
 import ErrorMessage from '../common/ErrorMessage';
 import Card from '../common/Card';
+import Markdown from '../common/Markdown';
 
 const RecipeDetails = ({ recipe, isLoading, error }) => {
   if (isLoading) {
@@ -35,7 +36,9 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
         <h1 className="text-4xl font-bold text-gray-900 mb-4">{recipe.name}</h1>
 
         {recipe.description && (
-          <p className="text-lg text-gray-600 mb-6">{recipe.description}</p>
+          <div className="text-lg text-gray-600 mb-6">
+            <Markdown>{recipe.description}</Markdown>
+          </div>
         )}
 
         <div className="flex flex-wrap gap-4 text-sm text-gray-500">
@@ -83,9 +86,7 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
       {recipe.ingredients && (
         <Card>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Ingredients</h2>
-          <div className="text-gray-700 whitespace-pre-line">
-            {recipe.ingredients}
-          </div>
+          <Markdown>{recipe.ingredients}</Markdown>
         </Card>
       )}
 
@@ -93,9 +94,7 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
       {recipe.instructions && (
         <Card>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Instructions</h2>
-          <div className="text-gray-700 whitespace-pre-line leading-relaxed">
-            {recipe.instructions}
-          </div>
+          <Markdown>{recipe.instructions}</Markdown>
         </Card>
       )}
     </div>

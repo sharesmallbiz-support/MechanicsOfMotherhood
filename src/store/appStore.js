@@ -21,8 +21,8 @@ const useAppStore = create((set) => ({
   setError: (error) => set({ error }),
   clearError: () => set({ error: null }),
 
-  // Website ID (hardcoded to 1 per spec, but can be made dynamic)
-  websiteId: 1,
+  // Website ID for Mechanics of Motherhood
+  websiteId: 2,
   setWebsiteId: (id) => set({ websiteId: id }),
 }));
 

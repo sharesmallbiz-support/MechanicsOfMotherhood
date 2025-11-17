@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../common/Card';
+import { getMarkdownPreview } from '../../utils/markdown';
 
 const RecipeCard = ({ recipe }) => {
   const navigate = useNavigate();
@@ -9,6 +10,11 @@ const RecipeCard = ({ recipe }) => {
     navigate(`/recipes/${recipe.id}`);
   };
 
+  // Strip markdown from description for preview
+  const descriptionPreview = recipe.description
+    ? getMarkdownPreview(recipe.description, 120)
+    : null;
+
   return (
     <Card hoverable onClick={handleClick}>
       <div className="space-y-3">
@@ -16,9 +22,9 @@ const RecipeCard = ({ recipe }) => {
           {recipe.name}
         </h3>
 
-        {recipe.description && (
+        {descriptionPreview && (
           <p className="text-gray-600 text-sm line-clamp-3">
-            {recipe.description}
+            {descriptionPreview}
           </p>
         )}
 

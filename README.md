@@ -87,7 +87,16 @@ src/
 The application connects to the WebSpark API at:
 `https://webspark.markhazleton.com/api`
 
-Website ID is configured in the Zustand store (default: 1)
+Website ID is configured in the Zustand store (default: 2 - Mechanics of Motherhood)
+
+### Markdown Support
+
+Recipe content (description, ingredients, and instructions) is rendered as Markdown with:
+- GitHub Flavored Markdown (GFM) support
+- Tables, lists, code blocks
+- Styled headings and formatting
+- Automatic link handling
+- Plain text preview in recipe cards
 
 ## Quality Assurance
 
