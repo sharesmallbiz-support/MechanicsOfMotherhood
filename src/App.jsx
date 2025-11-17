@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from './store/queryClient';
@@ -14,8 +14,8 @@ import ErrorMessage from './components/common/ErrorMessage';
  * Must be inside QueryClientProvider to use React Query hooks
  */
 const AppContent = () => {
-  const { data: websiteData, isLoading: websiteLoading, error: websiteError } = useWebsiteConfig();
-  const { data: menuData, isLoading: menuLoading, error: menuError } = useMenuHierarchy();
+  const { data: _websiteData, isLoading: websiteLoading, error: websiteError } = useWebsiteConfig();
+  const { data: _menuData, isLoading: menuLoading, error: menuError } = useMenuHierarchy();
 
   // Show loading spinner while initial data is loading
   if (websiteLoading || menuLoading) {

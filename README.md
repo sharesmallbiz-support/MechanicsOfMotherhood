@@ -89,6 +89,67 @@ The application connects to the WebSpark API at:
 
 Website ID is configured in the Zustand store (default: 1)
 
+## Quality Assurance
+
+### Code Quality
+- **ESLint:** 0 errors, 0 warnings ✅
+- **React Best Practices:** Enforced
+- **Accessibility:** WCAG 2.1 Level A compliant
+- **Security:** 0 vulnerabilities
+
+### Testing
+```bash
+npm run test              # Run tests in watch mode
+npm run test:run          # Run tests once
+npm run test:coverage     # Generate coverage report
+npm run test:ui           # Open test UI
+```
+
+Current Status: 6/6 tests passing ✅
+
+### Quality Audit
+```bash
+npm run quality:check     # Run lint + tests + build
+npm run quality:audit     # Full audit including deps
+npm run lint              # Check code quality
+npm run lint:fix          # Auto-fix linting issues
+```
+
+### Bundle Analysis
+```bash
+npm run bundle:analyze    # Analyze bundle size
+```
+
+Current bundle size: ~115 KB (gzipped)
+
+### Pre-commit Hooks
+Automatic checks before each commit:
+- ESLint auto-fix
+- Run related tests
+
+### Documentation
+- See [QUALITY_AUDIT.md](./QUALITY_AUDIT.md) for quality process
+- See [BASELINE_AUDIT_REPORT.md](./BASELINE_AUDIT_REPORT.md) for baseline metrics
+- See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines
+
+## Development Workflow
+
+1. Create a feature branch
+2. Write code following best practices
+3. Write tests for new features
+4. Run quality checks: `npm run quality:check`
+5. Commit (pre-commit hooks will run automatically)
+6. Push and create pull request
+
+## CI/CD
+
+GitHub Actions workflow runs on every push:
+- Linting (ESLint)
+- Testing (Vitest)
+- Build verification
+- Security audit
+- Dependency checks
+
 ## License
 
 All rights reserved.
