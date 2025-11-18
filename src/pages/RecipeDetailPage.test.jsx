@@ -60,7 +60,10 @@ describe('RecipeDetailPage', () => {
     const toggle = screen.getByRole('button', { name: /print recipe/i })
     await user.click(toggle)
 
-    expect(screen.getByRole('button', { name: /← view recipe/i })).toBeInTheDocument()
+    // Wait for lazy-loaded PrintableRecipe component to render
+    expect(await screen.findByRole('button', { name: /← view recipe/i })).toBeInTheDocument()
+    // Wait for the Print Recipe button to appear in the printable view
+    await screen.findByRole('button', { name: /print recipe/i })
     expect(screen.getAllByRole('button', { name: /print recipe/i })).toHaveLength(1)
 
     await user.click(screen.getByRole('button', { name: /← view recipe/i }))

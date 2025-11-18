@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useRecipe } from '../hooks';
 import RecipeDetails from '../components/recipes/details/RecipeDetails';
-import PrintableRecipe from '../components/recipes/details/PrintableRecipe';
 import Button from '../components/common/Button';
+import Spinner from '../components/common/Spinner';
 import SEO from '../components/seo/SEO';
 import SchemaMarkup from '../components/seo/SchemaMarkup';
 import { generateRecipeSchema } from '../utils/schemaGenerator';
 import { stripMarkdown } from '../utils/markdown';
 import { extractIdFromSlug, getUniqueRecipeSlug } from '../utils/slugify';
+
+const PrintableRecipe = React.lazy(() => import('../components/recipes/details/PrintableRecipe'));
 
 const RecipeDetailPage = () => {
   const { slug } = useParams();
@@ -73,7 +75,15 @@ const RecipeDetailPage = () => {
 
         {/* Show either print view or regular view */}
         {showPrintView ? (
-          <PrintableRecipe recipe={recipe} />
+          <Suspense
+            fallback={(
+              <div className="flex justify-center items-center min-h-64">
+                <Spinner size="xl" />
+              </div>
+            )}
+          >
+            <PrintableRecipe recipe={recipe} />
+          </Suspense>
         ) : (
           <RecipeDetails recipe={recipe} isLoading={isLoading} error={error} />
         )}

@@ -96,15 +96,40 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: '../dist',
+      emptyOutDir: true,
       sourcemap: mode !== 'production',
       // Bundle size budget warnings
       chunkSizeWarningLimit: 500, // 500 KB warning
       rollupOptions: {
         output: {
-          manualChunks: {
-            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            'query-vendor': ['@tanstack/react-query'],
-            'ui-vendor': ['zustand', 'axios'],
+          manualChunks(id) {
+            const normalizedId = id.replace(/\\/g, '/');
+
+            if (!normalizedId.includes('node_modules')) {
+              return undefined
+            }
+
+            if (/node_modules\/(react|react-dom|react-router-dom)\//.test(normalizedId)) {
+              return 'react-vendor'
+            }
+
+            if (normalizedId.includes('@tanstack/react-query')) {
+              return 'query-vendor'
+            }
+
+            if (normalizedId.includes('zustand') || normalizedId.includes('axios')) {
+              return 'ui-vendor'
+            }
+
+            if (normalizedId.includes('react-markdown') || normalizedId.includes('remark-gfm') || normalizedId.includes('dompurify')) {
+              return 'markdown-vendor'
+            }
+
+            if (normalizedId.includes('@sentry/react')) {
+              return 'monitoring-vendor'
+            }
+
+            return undefined
           },
         },
         onwarn(warning, warn) {

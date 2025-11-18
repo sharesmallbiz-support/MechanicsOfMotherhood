@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
-import RecipeListPage from '../pages/RecipeListPage';
-import RecipeDetailPage from '../pages/RecipeDetailPage';
-import GenericCmsPage from '../pages/GenericCmsPage';
+import Spinner from '../components/common/Spinner';
+
+const RecipeListPage = lazy(() => import('../pages/RecipeListPage'));
+const RecipeDetailPage = lazy(() => import('../pages/RecipeDetailPage'));
+const GenericCmsPage = lazy(() => import('../pages/GenericCmsPage'));
+
+const RouteFallback = () => (
+  <div className="flex justify-center items-center min-h-64">
+    <Spinner size="xl" />
+  </div>
+);
 
 /**
  * Application routing configuration
  */
 const AppRoutes = () => {
   return (
-    <Routes>
+    <Suspense fallback={<RouteFallback />}>
+      <Routes>
       {/* Home Page */}
       <Route path="/" element={<HomePage />} />
 
@@ -23,7 +32,8 @@ const AppRoutes = () => {
 
       {/* Generic CMS Page - Catch-all for dynamic pages */}
       <Route path="*" element={<GenericCmsPage />} />
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 };
 
