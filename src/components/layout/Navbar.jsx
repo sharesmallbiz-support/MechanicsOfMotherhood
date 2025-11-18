@@ -40,6 +40,7 @@ const Navbar = () => {
   // Build hierarchical structure
   const buildMenuTree = () => {
     const topLevel = navItems.filter((item) => !item.parent_page);
+    console.log('Building menu tree - topLevel items:', topLevel.map(i => ({ id: i.id, title: i.title, existingChildren: i.children })));
     return topLevel.map((parent) => ({
       ...parent,
       children: navItems.filter((item) => item.parent_page === parent.id),
@@ -50,6 +51,13 @@ const Navbar = () => {
 
   console.log('8. Menu tree length:', menuTree.length);
   console.log('9. Menu tree:', menuTree);
+  console.log('9b. First item children:', menuTree[0]?.children);
+  console.log('9c. Checking parent_page property:', {
+    firstNavItem: navItems[0],
+    hasParentPage: 'parent_page' in navItems[0],
+    hasParentId: 'parentId' in navItems[0],
+    hasParent: 'parent' in navItems[0],
+  });
   console.log('=== END DEBUG ===');
 
   // Close dropdown when clicking outside
