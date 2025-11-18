@@ -6,7 +6,7 @@ import useWebsiteConfig from '../../hooks/useWebsiteConfig';
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const dropdownRef = useRef(null);
+  const dropdownRefs = useRef({});
   const { data: websiteData } = useWebsiteConfig();
   const { data: menuData } = useMenuHierarchy();
 
@@ -24,7 +24,12 @@ const Navbar = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      // Check if click is outside all dropdown refs
+      const clickedOutside = Object.values(dropdownRefs.current).every(
+        (ref) => ref && !ref.contains(event.target)
+      );
+      
+      if (clickedOutside) {
         setOpenDropdown(null);
       }
     };
@@ -55,7 +60,7 @@ const Navbar = () => {
     }
 
     return (
-      <div key={item.id} className="relative" ref={dropdownRef}>
+      <div key={item.id} className="relative" ref={(el) => (dropdownRefs.current[item.id] = el)}>
         <button
           onClick={() => toggleDropdown(item.id)}
           className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center"
