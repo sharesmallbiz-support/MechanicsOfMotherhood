@@ -11,7 +11,8 @@ const Navbar = () => {
   const { data: menuData } = useMenuHierarchy();
 
   const websiteConfig = websiteData?.data;
-  const menuItems = menuData?.data?.items || [];
+  // menuData.data is already an array, not an object with .items
+  const menuItems = menuData?.data || [];
 
   // Debug logging
   console.log('=== NAVBAR DEBUG ===');
