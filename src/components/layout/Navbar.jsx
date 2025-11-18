@@ -14,43 +14,12 @@ const Navbar = () => {
   // menuData.data is already an array, not an object with .items
   const menuItems = menuData?.data || [];
 
-  // Debug logging
-  console.log('=== NAVBAR DEBUG ===');
-  console.log('1. Raw menuData:', menuData);
-  console.log('2. menuData?.data:', menuData?.data);
-  console.log('3. menuData?.data?.items:', menuData?.data?.items);
-  console.log('4. menuItems array length:', menuItems.length);
-  console.log('5. First menu item:', menuItems[0]);
-  if (menuItems[0]) {
-    console.log('5b. Properties of first item:', Object.keys(menuItems[0]));
-    console.log('5c. Checking navigation flags:', {
-      display_navigation: menuItems[0].display_navigation,
-      displayNavigation: menuItems[0].displayNavigation,
-      displayInNavigation: menuItems[0].displayInNavigation,
-      showInNav: menuItems[0].showInNav,
-    });
-  }
-
   // Filter menu items for navigation
   const navItems = menuItems.filter((item) => item.displayInNavigation);
-
-  console.log('6. After filter - navItems length:', navItems.length);
-  console.log('7. navItems:', navItems);
 
   // API already provides hierarchical structure with nested children
   // Just use the top-level items (they already have their children nested)
   const menuTree = navItems;
-
-  console.log('8. Menu tree length:', menuTree.length);
-  console.log('9. Menu tree:', menuTree);
-  console.log('9b. First item children:', menuTree[0]?.children);
-  console.log('9c. Checking parent_page property:', {
-    firstNavItem: navItems[0],
-    hasParentPage: 'parent_page' in navItems[0],
-    hasParentId: 'parentId' in navItems[0],
-    hasParent: 'parent' in navItems[0],
-  });
-  console.log('=== END DEBUG ===');
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -77,7 +46,7 @@ const Navbar = () => {
       return (
         <Link
           key={item.id}
-          to={`/${item.url}` || '/'}
+          to={item.url ? `/${item.url}` : '/'}
           className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
         >
           {item.title}
@@ -115,18 +84,18 @@ const Navbar = () => {
             <div className="py-1">
               {/* Parent link */}
               <Link
-                to={`/${item.url}` || '/'}
+                to={item.url ? `/${item.url}` : '/'}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium"
                 onClick={() => setOpenDropdown(null)}
               >
                 {item.title} Home
               </Link>
-              <div className="border-t border-gray-100"></div>
+              <div className="border-t border-gray-100" />
               {/* Child links */}
               {item.children.map((child) => (
                 <Link
                   key={child.id}
-                  to={`/${child.url}` || '/'}
+                  to={child.url ? `/${child.url}` : '/'}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                   onClick={() => setOpenDropdown(null)}
                 >
@@ -147,7 +116,7 @@ const Navbar = () => {
       return (
         <Link
           key={item.id}
-          to={`/${item.url}` || '/'}
+          to={item.url ? `/${item.url}` : '/'}
           className="block text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium"
           onClick={() => setMobileMenuOpen(false)}
         >
@@ -158,9 +127,9 @@ const Navbar = () => {
 
     return (
       <div key={item.id}>
-        <div
+        <button
           onClick={() => toggleDropdown(item.id)}
-          className="flex justify-between items-center text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium cursor-pointer"
+          className="w-full flex justify-between items-center text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium cursor-pointer"
         >
           <span>{item.title}</span>
           <svg
@@ -178,13 +147,13 @@ const Navbar = () => {
               d="M19 9l-7 7-7-7"
             />
           </svg>
-        </div>
+        </button>
 
         {/* Mobile Submenu */}
         {openDropdown === item.id && (
           <div className="pl-4 py-1 space-y-1">
             <Link
-              to={`/${item.url}` || '/'}
+              to={item.url ? `/${item.url}` : '/'}
               className="block text-gray-600 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -193,7 +162,7 @@ const Navbar = () => {
             {item.children.map((child) => (
               <Link
                 key={child.id}
-                to={`/${child.url}` || '/'}
+                to={child.url ? `/${child.url}` : '/'}
                 className="block text-gray-600 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >

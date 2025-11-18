@@ -2,11 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const plugins = [
+    tailwindcss(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -77,7 +79,7 @@ export default defineConfig(({ mode }) => {
     plugins.push(
       visualizer({
         open: true,
-        filename: 'dist/stats.html',
+        filename: '../dist/stats.html',
         gzipSize: true,
         brotliSize: true,
       })
@@ -85,6 +87,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    root: 'src',
     plugins,
     resolve: {
       alias: {
@@ -92,6 +95,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
+      outDir: '../dist',
       sourcemap: mode !== 'production',
       // Bundle size budget warnings
       chunkSizeWarningLimit: 500, // 500 KB warning
