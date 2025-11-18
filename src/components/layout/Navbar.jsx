@@ -21,6 +21,9 @@ const Navbar = () => {
   console.log('3. menuData?.data?.items:', menuData?.data?.items);
   console.log('4. menuItems array length:', menuItems.length);
   console.log('5. First menu item:', menuItems[0]);
+  if (menuItems[0]) {
+    console.log('5b. Properties of first item:', Object.keys(menuItems[0]));
+  }
 
   // Filter menu items for navigation
   const navItems = menuItems.filter((item) => item.display_navigation);
