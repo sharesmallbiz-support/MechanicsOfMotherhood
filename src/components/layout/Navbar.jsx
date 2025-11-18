@@ -32,7 +32,7 @@ const Navbar = () => {
   }
 
   // Filter menu items for navigation
-  const navItems = menuItems.filter((item) => item.display_navigation);
+  const navItems = menuItems.filter((item) => item.displayInNavigation);
 
   console.log('6. After filter - navItems length:', navItems.length);
   console.log('7. navItems:', navItems);
