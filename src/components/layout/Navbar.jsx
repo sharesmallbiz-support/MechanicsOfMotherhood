@@ -210,6 +210,13 @@ const Navbar = () => {
             </Link>
           </div>
 
+          {/* Debug Info - Temporary */}
+          {menuTree.length === 0 && (
+            <div className="text-xs text-red-600 px-2">
+              No menu items (check console)
+            </div>
+          )}
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:space-x-4">
             {menuTree.map(renderDesktopMenuItem)}
