@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCategories } from '../../hooks/useCategories';
+import { useCategories } from '../../hooks';
 import Spinner from '../common/Spinner';
 
 const CategoryFilter = ({ selectedCategoryId, onCategoryChange }) => {

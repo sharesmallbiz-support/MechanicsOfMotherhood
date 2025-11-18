@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getMenuHierarchy } from '../api/webCmsApi';
+import { getMenuHierarchy } from '../api';
+import { getStaticMenuHierarchy } from '../config/localContent';
 import useAppStore from '../store/appStore';
 
 /**
@@ -7,11 +8,14 @@ import useAppStore from '../store/appStore';
  */
 export const useMenuHierarchy = () => {
   const websiteId = useAppStore((state) => state.websiteId);
+  const fallbackData = getStaticMenuHierarchy();
 
   return useQuery({
     queryKey: ['menuHierarchy', websiteId],
     queryFn: () => getMenuHierarchy(websiteId),
     staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: !!websiteId,
+    initialData: fallbackData ?? undefined,
   });
 };
 

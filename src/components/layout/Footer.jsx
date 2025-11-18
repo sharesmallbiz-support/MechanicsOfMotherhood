@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useWebsiteConfig from '../../hooks/useWebsiteConfig';
+import { useWebsiteConfig } from '../../hooks';
 
 const Footer = () => {
   const { data: websiteData } = useWebsiteConfig();

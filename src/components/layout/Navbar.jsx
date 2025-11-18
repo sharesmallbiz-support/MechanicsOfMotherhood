@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useMenuHierarchy from '../../hooks/useMenuHierarchy';
-import useWebsiteConfig from '../../hooks/useWebsiteConfig';
+import { useMenuHierarchy, useWebsiteConfig } from '../../hooks';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

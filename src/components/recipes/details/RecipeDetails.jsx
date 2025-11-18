@@ -1,8 +1,8 @@
 import React from 'react';
-import Spinner from '../common/Spinner';
-import ErrorMessage from '../common/ErrorMessage';
-import Card from '../common/Card';
-import Markdown from '../common/Markdown';
+import Spinner from '../../common/Spinner';
+import ErrorMessage from '../../common/ErrorMessage';
+import Card from '../../common/Card';
+import Markdown from '../../common/Markdown';
 
 const RecipeDetails = ({ recipe, isLoading, error }) => {
   if (isLoading) {

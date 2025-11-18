@@ -5,8 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import queryClient from './store/queryClient';
 import Layout from './components/layout/Layout';
 import AppRoutes from './routes/AppRoutes';
-import useWebsiteConfig from './hooks/useWebsiteConfig';
-import useMenuHierarchy from './hooks/useMenuHierarchy';
+import { useWebsiteConfig, useMenuHierarchy } from './hooks';
 import Spinner from './components/common/Spinner';
 import ErrorMessage from './components/common/ErrorMessage';
 

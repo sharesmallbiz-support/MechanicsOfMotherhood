@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { findMenuByUrl } from '../api/webCmsApi';
+import { findMenuByUrl } from '../api';
 import useAppStore from '../store/appStore';
 import CmsPageRenderer from '../components/cms/CmsPageRenderer';
 import Spinner from '../components/common/Spinner';

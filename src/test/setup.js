@@ -32,3 +32,6 @@ global.IntersectionObserver = class IntersectionObserver {
   }
   unobserve() {}
 }
+
+// Smooth-scroll is used on pagination buttons
+window.scrollTo = vi.fn()

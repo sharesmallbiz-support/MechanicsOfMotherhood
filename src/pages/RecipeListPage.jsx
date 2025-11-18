@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRecipes } from '../hooks/useRecipes';
+import { useRecipes } from '../hooks';
 import RecipeList from '../components/recipes/RecipeList';
 import CategoryFilter from '../components/recipes/CategoryFilter';
 import SearchBar from '../components/common/SearchBar';

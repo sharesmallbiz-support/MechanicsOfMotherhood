@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useRecipe } from '../hooks/useRecipes';
-import RecipeDetails from '../components/recipes/RecipeDetails';
-import PrintableRecipe from '../components/recipes/PrintableRecipe';
+import { useRecipe } from '../hooks';
+import RecipeDetails from '../components/recipes/details/RecipeDetails';
+import PrintableRecipe from '../components/recipes/details/PrintableRecipe';
 import Button from '../components/common/Button';
 import SEO from '../components/seo/SEO';
 import SchemaMarkup from '../components/seo/SchemaMarkup';

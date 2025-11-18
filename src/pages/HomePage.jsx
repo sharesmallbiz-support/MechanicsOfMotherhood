@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useRecipes } from '../hooks/useRecipes';
 import RecipeList from '../components/recipes/RecipeList';
-import useWebsiteConfig from '../hooks/useWebsiteConfig';
+import { useRecipes, useWebsiteConfig } from '../hooks';
 import SEO from '../components/seo/SEO';
 import SchemaMarkup from '../components/seo/SchemaMarkup';
 import { generateOrganizationSchema, generateWebSiteSchema } from '../utils/schemaGenerator';

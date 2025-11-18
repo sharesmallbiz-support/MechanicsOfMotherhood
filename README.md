@@ -39,6 +39,31 @@ A modern React web application for browsing recipes and displaying dynamic CMS c
 npm install
 ```
 
+## Environment Setup
+
+Most setups can run the default `npm install`, but Windows users may see peer-dependency conflicts (React 19 vs. `react-helmet-async`). Use the following recovery flow when that happens:
+
+```powershell
+# Clean the workspace
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json
+npm cache clean --force
+
+# Install with the legacy resolver
+npm install --legacy-peer-deps
+
+# Smoke-test the build
+npm run build
+```
+
+To make the workaround permanent, set `legacy-peer-deps=true` in `.npmrc`. Verify the dependency graph if install errors persist:
+
+```powershell
+npm list react-helmet-async
+```
+
+You should see `react-helmet-async@2.0.5` in the tree. If not, repeat the clean install steps above.
+
 ### Development
 
 Run the development server:
@@ -137,9 +162,9 @@ Automatic checks before each commit:
 - Run related tests
 
 ### Documentation
-- See [QUALITY_AUDIT.md](./QUALITY_AUDIT.md) for quality process
-- See [BASELINE_AUDIT_REPORT.md](./BASELINE_AUDIT_REPORT.md) for baseline metrics
-- See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines
+- Start with the [Quality Baseline & Audit Playbook](./docs/QUALITY_BASELINE.md)
+- Learn how to contribute via [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)
+- Deep dives live under `docs/`: [ADVANCED_FEATURES](./docs/ADVANCED_FEATURES.md), [SEO_IMPLEMENTATION](./docs/SEO_IMPLEMENTATION.md), [SLUG_ROUTING](./docs/SLUG_ROUTING.md)
 
 ## Development Workflow
 
