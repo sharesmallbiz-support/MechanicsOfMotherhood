@@ -13,8 +13,21 @@ const Navbar = () => {
   const websiteConfig = websiteData?.data;
   const menuItems = menuData?.data?.items || [];
 
+  // Debug logging
+  console.log('Navbar Debug:', {
+    hasMenuData: !!menuData,
+    menuDataStructure: menuData ? Object.keys(menuData) : null,
+    menuItemsCount: menuItems.length,
+    firstItem: menuItems[0],
+  });
+
   // Filter menu items for navigation
   const navItems = menuItems.filter((item) => item.display_navigation);
+
+  console.log('After filter:', {
+    navItemsCount: navItems.length,
+    navItems: navItems.map(i => ({ id: i.id, title: i.title, display_navigation: i.display_navigation }))
+  });
 
   // Build hierarchical structure
   const buildMenuTree = () => {
@@ -26,6 +39,11 @@ const Navbar = () => {
   };
 
   const menuTree = buildMenuTree();
+
+  console.log('Menu Tree:', {
+    menuTreeCount: menuTree.length,
+    menuTree: menuTree.map(i => ({ id: i.id, title: i.title, childrenCount: i.children?.length }))
+  });
 
   // Close dropdown when clicking outside
   useEffect(() => {
