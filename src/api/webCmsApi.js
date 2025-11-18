@@ -76,7 +76,10 @@ export const findMenuByUrl = async (websiteId, url) => {
     });
 
     if (response.success && response.data?.items) {
-      const menuItem = response.data.items.find((item) => item.url === url);
+      // Normalize URL by removing leading slash for comparison
+      const normalizedUrl = url.startsWith('/') ? url.substring(1) : url;
+
+      const menuItem = response.data.items.find((item) => item.url === normalizedUrl);
       if (menuItem) {
         // Get full menu details including pageContent
         return await getMenuById(menuItem.id);
