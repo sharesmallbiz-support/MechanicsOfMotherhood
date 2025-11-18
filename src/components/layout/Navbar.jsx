@@ -23,6 +23,12 @@ const Navbar = () => {
   console.log('5. First menu item:', menuItems[0]);
   if (menuItems[0]) {
     console.log('5b. Properties of first item:', Object.keys(menuItems[0]));
+    console.log('5c. Checking navigation flags:', {
+      display_navigation: menuItems[0].display_navigation,
+      displayNavigation: menuItems[0].displayNavigation,
+      displayInNavigation: menuItems[0].displayInNavigation,
+      showInNav: menuItems[0].showInNav,
+    });
   }
 
   // Filter menu items for navigation
