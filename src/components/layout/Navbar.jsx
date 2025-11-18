@@ -37,17 +37,9 @@ const Navbar = () => {
   console.log('6. After filter - navItems length:', navItems.length);
   console.log('7. navItems:', navItems);
 
-  // Build hierarchical structure
-  const buildMenuTree = () => {
-    const topLevel = navItems.filter((item) => !item.parent_page);
-    console.log('Building menu tree - topLevel items:', topLevel.map(i => ({ id: i.id, title: i.title, existingChildren: i.children })));
-    return topLevel.map((parent) => ({
-      ...parent,
-      children: navItems.filter((item) => item.parent_page === parent.id),
-    }));
-  };
-
-  const menuTree = buildMenuTree();
+  // API already provides hierarchical structure with nested children
+  // Just use the top-level items (they already have their children nested)
+  const menuTree = navItems;
 
   console.log('8. Menu tree length:', menuTree.length);
   console.log('9. Menu tree:', menuTree);
