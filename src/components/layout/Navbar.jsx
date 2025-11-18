@@ -14,20 +14,18 @@ const Navbar = () => {
   const menuItems = menuData?.data?.items || [];
 
   // Debug logging
-  console.log('Navbar Debug:', {
-    hasMenuData: !!menuData,
-    menuDataStructure: menuData ? Object.keys(menuData) : null,
-    menuItemsCount: menuItems.length,
-    firstItem: menuItems[0],
-  });
+  console.log('=== NAVBAR DEBUG ===');
+  console.log('1. Raw menuData:', menuData);
+  console.log('2. menuData?.data:', menuData?.data);
+  console.log('3. menuData?.data?.items:', menuData?.data?.items);
+  console.log('4. menuItems array length:', menuItems.length);
+  console.log('5. First menu item:', menuItems[0]);
 
   // Filter menu items for navigation
   const navItems = menuItems.filter((item) => item.display_navigation);
 
-  console.log('After filter:', {
-    navItemsCount: navItems.length,
-    navItems: navItems.map(i => ({ id: i.id, title: i.title, display_navigation: i.display_navigation }))
-  });
+  console.log('6. After filter - navItems length:', navItems.length);
+  console.log('7. navItems:', navItems);
 
   // Build hierarchical structure
   const buildMenuTree = () => {
@@ -40,10 +38,9 @@ const Navbar = () => {
 
   const menuTree = buildMenuTree();
 
-  console.log('Menu Tree:', {
-    menuTreeCount: menuTree.length,
-    menuTree: menuTree.map(i => ({ id: i.id, title: i.title, childrenCount: i.children?.length }))
-  });
+  console.log('8. Menu tree length:', menuTree.length);
+  console.log('9. Menu tree:', menuTree);
+  console.log('=== END DEBUG ===');
 
   // Close dropdown when clicking outside
   useEffect(() => {
