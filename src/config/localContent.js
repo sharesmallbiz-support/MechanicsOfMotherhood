@@ -13,10 +13,38 @@ const normalizedMenuHierarchy = (() => {
     items = menuHierarchyJson.data.items;
   }
 
+  // Build hierarchy from flat list
+  const buildHierarchy = (flatItems) => {
+    const itemMap = new Map();
+    const rootItems = [];
+
+    // First pass: create a map of all items
+    flatItems.forEach(item => {
+      itemMap.set(item.id, { ...item, children: [] });
+    });
+
+    // Second pass: build hierarchy
+    flatItems.forEach(item => {
+      const node = itemMap.get(item.id);
+      if (item.parent_page && itemMap.has(item.parent_page)) {
+        // This item has a parent, add it to parent's children
+        const parent = itemMap.get(item.parent_page);
+        parent.children.push(node);
+      } else {
+        // This is a root item
+        rootItems.push(node);
+      }
+    });
+
+    return rootItems;
+  };
+
+  const hierarchicalItems = buildHierarchy(items);
+
   return {
     success: menuHierarchyJson?.success ?? true,
     message: menuHierarchyJson?.message ?? '',
-    data: items,
+    data: hierarchicalItems,
   };
 })();
 

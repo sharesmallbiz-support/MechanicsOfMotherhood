@@ -14,7 +14,7 @@ const Navbar = () => {
   const menuItems = menuData?.data || [];
 
   // Filter menu items for navigation
-  const navItems = menuItems.filter((item) => item.displayInNavigation);
+  const navItems = menuItems.filter((item) => item.display_navigation);
 
   // API already provides hierarchical structure with nested children
   // Just use the top-level items (they already have their children nested)
