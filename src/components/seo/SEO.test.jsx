@@ -30,7 +30,7 @@ describe('SEO component', () => {
         .toContain('Discover delicious family recipes')
       expect(document.querySelector('meta[property="og:type"]').content).toBe('website')
       expect(document.querySelector('meta[property="og:image"]').content)
-        .toContain('/og-default-image.jpg')
+        .toContain('/images/logos/MOM-Logo-Full.png')
     })
   })
 
