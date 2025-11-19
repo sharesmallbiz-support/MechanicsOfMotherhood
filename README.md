@@ -93,18 +93,34 @@ npm run preview
 ## Project Structure
 
 ```
-src/
-├── api/              # API client and functions
-├── components/       # React components
-│   ├── common/      # Reusable components
-│   ├── layout/      # Layout components
-│   ├── recipes/     # Recipe-related components
-│   └── cms/         # CMS components
-├── hooks/           # Custom React hooks
-├── pages/           # Page components
-├── routes/          # Routing configuration
-├── store/           # State management
-└── utils/           # Utility functions
+├── docs/              # Documentation files
+├── e2e/               # End-to-end tests (Playwright)
+├── public/            # Static assets (robots.txt, sitemap.xml, etc.)
+├── scripts/           # Build and utility scripts
+├── src/               # Source code
+│   ├── api/          # API client and functions
+│   ├── components/   # React components
+│   │   ├── cms/     # CMS components
+│   │   ├── common/  # Reusable components
+│   │   ├── layout/  # Layout components
+│   │   ├── recipes/ # Recipe-related components
+│   │   └── seo/     # SEO components
+│   ├── config/      # Configuration files
+│   ├── data/        # Static data files
+│   ├── hooks/       # Custom React hooks
+│   ├── pages/       # Page components
+│   ├── routes/      # Routing configuration
+│   ├── store/       # State management (Zustand)
+│   ├── test/        # Test setup and utilities
+│   └── utils/       # Utility functions
+├── .editorconfig     # Editor configuration
+├── .gitignore        # Git ignore patterns
+├── eslint.config.js  # ESLint configuration
+├── index.html        # HTML entry point
+├── package.json      # Project dependencies
+├── playwright.config.js  # Playwright configuration
+├── vite.config.js    # Vite configuration
+└── vitest.config.js  # Vitest configuration
 ```
 
 ## API Configuration

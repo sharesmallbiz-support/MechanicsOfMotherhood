@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
     plugins.push(
       visualizer({
         open: true,
-        filename: '../dist/stats.html',
+        filename: 'dist/stats.html',
         gzipSize: true,
         brotliSize: true,
       })
@@ -87,7 +87,6 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    root: 'src',
     plugins,
     resolve: {
       alias: {
@@ -95,7 +94,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: '../dist',
+      outDir: 'dist',
       emptyOutDir: true,
       sourcemap: mode !== 'production',
       // Bundle size budget warnings
