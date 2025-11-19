@@ -57,3 +57,5 @@ Desktop.ini
 *.tmp
 *.temp
 .cache/
+# API cache files
+data/api-*.json

@@ -12,8 +12,7 @@
 
 /* eslint-disable no-console */
 
-
-import { writeFileSync } from 'fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -45,20 +44,64 @@ const API_BASE_URL = 'https://webspark.markhazleton.com/api';
 const SITE_URL = 'https://mechanicsofmotherhood.com';
 const WEBSITE_ID = 2;
 
-// Import local data as fallback
-import { readFileSync } from 'fs';
+// Cache directory for API responses
+const cacheDir = join(__dirname, '..', 'data');
+const cachedRecipesPath = join(cacheDir, 'api-recipes-cache.json');
+const cachedMenuPath = join(cacheDir, 'api-menu-cache.json');
+
+// Fallback to src/data if cache doesn't exist
 const localRecipesPath = join(__dirname, '..', 'src', 'data', 'recipes-list.json');
 const localMenuPath = join(__dirname, '..', 'src', 'data', 'menu-hierarchy.json');
 
 /**
- * Load recipes from local JSON file
+ * Ensure cache directory exists
+ */
+function ensureCacheDir() {
+  if (!existsSync(cacheDir)) {
+    mkdirSync(cacheDir, { recursive: true });
+    console.log('Created cache directory:', cacheDir);
+  }
+}
+
+/**
+ * Save data to cache file
+ */
+function saveToCache(filePath, data) {
+  try {
+    ensureCacheDir();
+    writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    console.log(`✓ Cached data to ${filePath}`);
+  } catch (error) {
+    console.warn('Could not save cache:', error.message);
+  }
+}
+
+/**
+ * Load recipes from cache or local JSON file
  */
 function loadLocalRecipes() {
+  // Try cache first
+  try {
+    if (existsSync(cachedRecipesPath)) {
+      const data = readFileSync(cachedRecipesPath, 'utf-8');
+      const recipesData = JSON.parse(data);
+      
+      if (recipesData.success && Array.isArray(recipesData.data)) {
+        console.log(`Using cached recipes (${recipesData.data.length} recipes)`);
+        return recipesData.data;
+      }
+    }
+  } catch (error) {
+    console.warn('Could not load cached recipes:', error.message);
+  }
+  
+  // Fall back to src/data
   try {
     const data = readFileSync(localRecipesPath, 'utf-8');
     const recipesData = JSON.parse(data);
     
     if (recipesData.success && Array.isArray(recipesData.data)) {
+      console.log(`Using local fallback recipes (${recipesData.data.length} recipes)`);
       return recipesData.data;
     }
     return [];
@@ -126,6 +169,15 @@ async function fetchAllRecipes() {
     
     if (allRecipes.length > 0) {
       console.log(`✓ Fetched ${allRecipes.length} recipes from API (${currentPage} pages)`);
+      
+      // Cache the complete recipe list
+      saveToCache(cachedRecipesPath, {
+        success: true,
+        data: allRecipes,
+        message: `Retrieved ${allRecipes.length} recipes`,
+        cachedAt: new Date().toISOString()
+      });
+      
       return allRecipes;
     }
     
@@ -139,19 +191,51 @@ async function fetchAllRecipes() {
 }
 
 /**
- * Load menu items from local JSON file
+ * Load menu items from cache or local JSON file
  */
 function loadLocalMenu() {
+  // Try cache first
+  try {
+    if (existsSync(cachedMenuPath)) {
+      const data = readFileSync(cachedMenuPath, 'utf-8');
+      const menuData = JSON.parse(data);
+      
+      // Handle both flat array and nested structure
+      if (menuData.success) {
+        let items = [];
+        if (Array.isArray(menuData.data)) {
+          items = menuData.data;
+        } else if (menuData.data && Array.isArray(menuData.data.items)) {
+          items = menuData.data.items;
+        }
+        
+        if (items.length > 0) {
+          console.log(`Using cached menu (${items.length} items)`);
+          return items;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('Could not load cached menu:', error.message);
+  }
+  
+  // Fall back to src/data
   try {
     const data = readFileSync(localMenuPath, 'utf-8');
     const menuData = JSON.parse(data);
     
     // Handle both flat array and nested structure
     if (menuData.success) {
+      let items = [];
       if (Array.isArray(menuData.data)) {
-        return menuData.data;
+        items = menuData.data;
       } else if (menuData.data && Array.isArray(menuData.data.items)) {
-        return menuData.data.items;
+        items = menuData.data.items;
+      }
+      
+      if (items.length > 0) {
+        console.log(`Using local fallback menu (${items.length} items)`);
+        return items;
       }
     }
     return [];
@@ -188,6 +272,15 @@ async function fetchMenuItems() {
 
     if (data.success && Array.isArray(data.data)) {
       console.log(`✓ Fetched ${data.data.length} menu items from API`);
+      
+      // Cache the menu data
+      saveToCache(cachedMenuPath, {
+        success: true,
+        data: data.data,
+        message: `Retrieved ${data.data.length} menu items`,
+        cachedAt: new Date().toISOString()
+      });
+      
       return data.data;
     }
     
