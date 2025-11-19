@@ -33,6 +33,21 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
     <div className="space-y-6">
       {/* Recipe Header */}
       <div className="bg-white rounded-lg shadow-md p-8">
+        {/* Recipe Image */}
+        {recipe.imageUrl && (
+          <div className="w-full mb-6 rounded-lg overflow-hidden">
+            <img
+              src={recipe.imageUrl}
+              alt={recipe.name}
+              loading="lazy"
+              className="w-full h-auto max-h-96 object-cover"
+              onError={(e) => {
+                e.target.parentElement.style.display = 'none';
+              }}
+            />
+          </div>
+        )}
+
         <h1 className="text-4xl font-bold text-gray-900 mb-4">{recipe.name}</h1>
 
         {recipe.description && (
@@ -49,6 +64,7 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -68,6 +84,7 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"

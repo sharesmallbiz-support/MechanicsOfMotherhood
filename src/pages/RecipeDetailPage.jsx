@@ -4,6 +4,7 @@ import { useRecipe } from '../hooks';
 import RecipeDetails from '../components/recipes/details/RecipeDetails';
 import Button from '../components/common/Button';
 import Spinner from '../components/common/Spinner';
+import Breadcrumbs from '../components/common/Breadcrumbs';
 import SEO from '../components/seo/SEO';
 import SchemaMarkup from '../components/seo/SchemaMarkup';
 import { generateRecipeSchema } from '../utils/schemaGenerator';
@@ -55,6 +56,16 @@ const RecipeDetailPage = () => {
 
       {/* Recipe Schema for Rich Results */}
       {recipeSchema && <SchemaMarkup schema={recipeSchema} />}
+
+      {/* Breadcrumbs */}
+      {recipe && (
+        <Breadcrumbs
+          items={[
+            { name: 'Recipes', path: '/recipes' },
+            { name: recipe.name, path: `/recipes/${canonicalSlug}` },
+          ]}
+        />
+      )}
 
       <div className="space-y-6">
         {/* Back Button and Print Toggle */}

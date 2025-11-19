@@ -3,6 +3,7 @@ import { useRecipes } from '../hooks';
 import RecipeList from '../components/recipes/RecipeList';
 import CategoryFilter from '../components/recipes/CategoryFilter';
 import SearchBar from '../components/common/SearchBar';
+import Breadcrumbs from '../components/common/Breadcrumbs';
 import SEO from '../components/seo/SEO';
 
 const RecipeListPage = () => {
@@ -83,6 +84,9 @@ const RecipeListPage = () => {
         keywords={['recipes', 'cooking', 'family meals', 'easy recipes', 'home cooking']}
         noindex={shouldNoIndex}
       />
+
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ name: 'Recipes', path: '/recipes' }]} />
 
       <div className="space-y-8">
         {/* Page Header */}

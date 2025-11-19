@@ -1,0 +1,53 @@
+# Image Assets Needed
+
+To complete SEO optimization, add the following image assets to the /public folder:
+
+## Required Images:
+
+1. **og-default-image.jpg** (1200x630px)
+   - Default Open Graph image for social media sharing
+   - Used when recipe doesn't have a specific image
+   - Recommended size: 1200x630 pixels
+   - Format: JPG or PNG
+   - Should include: Site logo/branding, tagline
+
+2. **icon-192x192.png** (192x192px)
+   - PWA icon for mobile devices
+   - Square format with transparent or branded background
+   - Format: PNG with transparency
+
+3. **icon-512x512.png** (512x512px)
+   - PWA icon for high-resolution devices
+   - Square format with transparent or branded background
+   - Format: PNG with transparency
+
+4. **logo.png** (Recommended 400x400px minimum)
+   - Site logo referenced in Organization schema
+   - Used for branding and SEO
+   - Format: PNG with transparency preferred
+
+## Optional (Future Enhancement):
+
+5. **Recipe Images**
+   - Each recipe should have an associated image
+   - Recommended size: 800x600 pixels (4:3 ratio) or 1200x800 pixels
+   - Format: WebP with JPG fallback for best performance
+   - Store via API or CDN, not in repo
+
+## How to Create These:
+
+### Using Online Tools:
+- Canva (free): Create social media graphics and icons
+- Figma (free): Design custom images
+- Photopea (free): Photoshop alternative
+
+### Design Tips:
+- **OG Image**: Include site name, tagline, and appealing food imagery
+- **Icons**: Simple, recognizable logo or initials
+- **Logo**: Professional, scalable, works at any size
+
+### After Creating:
+1. Place files in `/public` folder
+2. Test social sharing with Facebook Debugger: https://developers.facebook.com/tools/debug/
+3. Test PWA icons in Chrome DevTools > Application > Manifest
+4. Validate with Lighthouse SEO audit

@@ -21,6 +21,21 @@ const RecipeCard = ({ recipe }) => {
   return (
     <Card hoverable onClick={handleClick}>
       <div className="space-y-3">
+        {/* Recipe Image */}
+        {recipe.imageUrl && (
+          <div className="w-full h-48 overflow-hidden rounded-lg bg-gray-100">
+            <img
+              src={recipe.imageUrl}
+              alt={recipe.name}
+              loading="lazy"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          </div>
+        )}
+
         <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">
           {recipe.name}
         </h3>
@@ -39,6 +54,7 @@ const RecipeCard = ({ recipe }) => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"

@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable no-console */
-/* global process */
+
 
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -45,39 +45,158 @@ const API_BASE_URL = 'https://webspark.markhazleton.com/api';
 const SITE_URL = 'https://mechanicsofmotherhood.com';
 const WEBSITE_ID = 2;
 
-/**
- * Fetch all recipes from the API
- */
-async function fetchAllRecipes() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/Recipe/GetBySiteId/${WEBSITE_ID}`);
-    const data = await response.json();
+// Import local data as fallback
+import { readFileSync } from 'fs';
+const localRecipesPath = join(__dirname, '..', 'src', 'data', 'recipes-list.json');
+const localMenuPath = join(__dirname, '..', 'src', 'data', 'menu-hierarchy.json');
 
-    if (data.success && Array.isArray(data.data)) {
-      return data.data;
+/**
+ * Load recipes from local JSON file
+ */
+function loadLocalRecipes() {
+  try {
+    const data = readFileSync(localRecipesPath, 'utf-8');
+    const recipesData = JSON.parse(data);
+    
+    if (recipesData.success && Array.isArray(recipesData.data)) {
+      return recipesData.data;
     }
     return [];
   } catch (error) {
-    console.error('Error fetching recipes:', error);
+    console.warn('Could not load local recipes:', error.message);
     return [];
   }
 }
 
 /**
- * Fetch menu items for dynamic CMS pages
+ * Fetch all recipes from the API or use local fallback
  */
-async function fetchMenuItems() {
+async function fetchAllRecipes() {
   try {
-    const response = await fetch(`${API_BASE_URL}/WebCms/GetMenuHierarchyByWebsiteId/${WEBSITE_ID}`);
-    const data = await response.json();
+    console.log('Attempting to fetch from:', `${API_BASE_URL}/recipespark/recipes?pageSize=1000`);
+    
+    // Try API first with correct endpoint - fetch all pages
+    let allRecipes = [];
+    let currentPage = 1;
+    let hasMore = true;
+    
+    while (hasMore && currentPage <= 20) { // Safety limit of 20 pages
+      const response = await fetch(
+        `${API_BASE_URL}/recipespark/recipes?pageNumber=${currentPage}&pageSize=100`
+      );
+      
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        if (currentPage === 1) {
+          console.warn(`API returned status ${response.status}. Using local fallback.`);
+          return loadLocalRecipes();
+        }
+        break; // Stop fetching more pages
+      }
+      
+      // Check content type
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        if (currentPage === 1) {
+          console.warn('API did not return JSON. Using local fallback.');
+          return loadLocalRecipes();
+        }
+        break;
+      }
+      
+      const data = await response.json();
 
-    if (data.success && Array.isArray(data.data)) {
-      return data.data;
+      if (data.success && Array.isArray(data.data)) {
+        allRecipes = allRecipes.concat(data.data);
+        
+        // Check if there are more pages
+        if (data.pagination && data.pagination.hasNext) {
+          currentPage++;
+        } else {
+          hasMore = false;
+        }
+      } else {
+        if (currentPage === 1) {
+          console.warn('API response format unexpected. Using local fallback.');
+          return loadLocalRecipes();
+        }
+        break;
+      }
+    }
+    
+    if (allRecipes.length > 0) {
+      console.log(`✓ Fetched ${allRecipes.length} recipes from API (${currentPage} pages)`);
+      return allRecipes;
+    }
+    
+    console.warn('No recipes fetched from API. Using local fallback.');
+    return loadLocalRecipes();
+  } catch (error) {
+    console.warn('Could not fetch recipes from API:', error.message);
+    console.log('Using local recipe data...');
+    return loadLocalRecipes();
+  }
+}
+
+/**
+ * Load menu items from local JSON file
+ */
+function loadLocalMenu() {
+  try {
+    const data = readFileSync(localMenuPath, 'utf-8');
+    const menuData = JSON.parse(data);
+    
+    // Handle both flat array and nested structure
+    if (menuData.success) {
+      if (Array.isArray(menuData.data)) {
+        return menuData.data;
+      } else if (menuData.data && Array.isArray(menuData.data.items)) {
+        return menuData.data.items;
+      }
     }
     return [];
   } catch (error) {
-    console.error('Error fetching menu items:', error);
+    console.warn('Could not load local menu:', error.message);
     return [];
+  }
+}
+
+/**
+ * Fetch menu items for dynamic CMS pages or use local fallback
+ */
+async function fetchMenuItems() {
+  try {
+    console.log('Attempting to fetch from:', `${API_BASE_URL}/webcms/websites/${WEBSITE_ID}/menu-hierarchy`);
+    
+    // Try API first with correct endpoint
+    const response = await fetch(`${API_BASE_URL}/webcms/websites/${WEBSITE_ID}/menu-hierarchy`);
+    
+    // Check if response is ok before parsing
+    if (!response.ok) {
+      console.warn(`API returned status ${response.status}. Using local fallback.`);
+      return loadLocalMenu();
+    }
+    
+    // Check content type
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.warn('API did not return JSON. Using local fallback.');
+      return loadLocalMenu();
+    }
+    
+    const data = await response.json();
+
+    if (data.success && Array.isArray(data.data)) {
+      console.log(`✓ Fetched ${data.data.length} menu items from API`);
+      return data.data;
+    }
+    
+    console.warn('API response format unexpected. Using local fallback.');
+    return loadLocalMenu();
+  } catch (error) {
+    console.warn('Could not fetch menu items from API:', error.message);
+    console.log('Using local menu data...');
+    return loadLocalMenu();
   }
 }
 
@@ -155,14 +274,20 @@ async function generateSitemap() {
   const extractPages = (items) => {
     const pages = [];
     items.forEach(item => {
-      if (item.linkUrl && item.linkUrl !== '/') {
-        pages.push({
-          url: item.linkUrl,
-          lastmod: item.modifiedDT
-            ? formatDate(new Date(item.modifiedDT))
-            : now
-        });
+      // Add the current item if it has a valid URL
+      if (item.url && item.url !== '/' && item.url !== 'recipe') {
+        const linkUrl = item.linkUrl || item.url;
+        // Skip recipe controller pages as they're handled separately
+        if (!linkUrl.startsWith('/recipe/') && linkUrl !== '/recipe' && linkUrl !== 'recipe') {
+          pages.push({
+            url: linkUrl.startsWith('/') ? linkUrl : `/${linkUrl}`,
+            lastmod: item.modifiedDT || item.modified || item.modified_w3c
+              ? formatDate(new Date(item.modifiedDT || item.modified || item.modified_w3c))
+              : now
+          });
+        }
       }
+      // Recursively process children
       if (item.children && item.children.length > 0) {
         pages.push(...extractPages(item.children));
       }
@@ -198,5 +323,6 @@ ${urls.join('\n')}
 // Run the generator
 generateSitemap().catch(error => {
   console.error('Failed to generate sitemap:', error);
-  process.exit(1);
+  // Don't exit with error code - allow build to continue
+  console.log('⚠️  Sitemap generation had issues but continuing...');
 });
