@@ -202,7 +202,7 @@ export const generateOrganizationSchema = (config = {}) => {
     name: config.name || 'Mechanics of Motherhood',
     description: config.description || 'Delicious family recipes and cooking tips for busy moms.',
     url: 'https://mechanicsofmotherhood.com',
-    logo: 'https://mechanicsofmotherhood.com/logo.png',
+    logo: 'https://mechanicsofmotherhood.com/images/logos/MOM-Logo-Icon.png',
     sameAs: [
       // Add social media links when available
       'https://www.facebook.com/mechanicsofmotherhood',

@@ -34,19 +34,17 @@ const RecipeDetails = ({ recipe, isLoading, error }) => {
       {/* Recipe Header */}
       <div className="bg-white rounded-lg shadow-md p-8">
         {/* Recipe Image */}
-        {recipe.imageUrl && (
-          <div className="w-full mb-6 rounded-lg overflow-hidden">
-            <img
-              src={recipe.imageUrl}
-              alt={recipe.name}
-              loading="lazy"
-              className="w-full h-auto max-h-96 object-cover"
-              onError={(e) => {
-                e.target.parentElement.style.display = 'none';
-              }}
-            />
-          </div>
-        )}
+        <div className="w-full mb-6 rounded-lg overflow-hidden bg-gray-50">
+          <img
+            src={recipe.imageUrl || '/images/recipes/mom-recipe-placeholder.svg'}
+            alt={recipe.name}
+            loading="lazy"
+            className="w-full h-auto max-h-96 object-cover"
+            onError={(e) => {
+              e.target.src = '/images/recipes/mom-recipe-placeholder.svg';
+            }}
+          />
+        </div>
 
         <h1 className="text-4xl font-bold text-gray-900 mb-4">{recipe.name}</h1>
 

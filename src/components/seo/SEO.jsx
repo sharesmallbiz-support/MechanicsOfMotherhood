@@ -17,7 +17,7 @@ const SEO = ({
 }) => {
   const siteUrl = 'https://mechanicsofmotherhood.com';
   const fullUrl = canonical ? `${siteUrl}${canonical}` : siteUrl;
-  const defaultImage = `${siteUrl}/og-default-image.jpg`;
+  const defaultImage = `${siteUrl}/images/logos/MOM-Logo-Full.png`;
   const ogImage = image || defaultImage;
 
   // Construct full title with site name
