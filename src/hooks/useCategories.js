@@ -1,31 +1,35 @@
-import { useQuery } from '@tanstack/react-query';
-import { getCategories, getCategoryById } from '../api';
 import { getStaticCategories, getStaticCategoryById } from '../config/localContent';
 
 /**
- * Hook to fetch all recipe categories
+ * Hook to get all recipe categories from local data
+ * Data is refreshed from API during build process
  */
 export const useCategories = (includeInactive = false) => {
-  const fallbackData = includeInactive ? null : getStaticCategories();
-
-  return useQuery({
-    queryKey: ['categories', includeInactive],
-    queryFn: () => getCategories(includeInactive),
-    staleTime: 15 * 60 * 1000, // 15 minutes
-    initialData: fallbackData ?? undefined,
-  });
+  const data = getStaticCategories();
+  
+  // Filter out inactive if requested
+  const filteredData = includeInactive
+    ? data?.data
+    : data?.data?.filter((cat) => cat.isActive !== false);
+  
+  return {
+    data: { success: true, data: filteredData },
+    isLoading: false,
+    isError: false,
+    error: null,
+  };
 };
 
 /**
- * Hook to fetch a single category by ID
+ * Hook to get a single category by ID from local data
  */
 export const useCategory = (id) => {
-  const fallbackData = getStaticCategoryById(id);
-
-  return useQuery({
-    queryKey: ['category', id],
-    queryFn: () => getCategoryById(id),
-    enabled: !!id,
-    initialData: fallbackData ?? undefined,
-  });
+  const data = getStaticCategoryById(id);
+  
+  return {
+    data: data?.data,
+    isLoading: false,
+    isError: !data,
+    error: data ? null : new Error('Category not found'),
+  };
 };

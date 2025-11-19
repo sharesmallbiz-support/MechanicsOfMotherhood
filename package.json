@@ -1,11 +1,11 @@
 {
   "name": "mechanicsofmotherhood",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.10",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run lint && npm run test:run && vite build && npm run generate-sitemap",
+    "build": "node scripts/fetchApiData.js && node scripts/generateBuildInfo.js && npm run lint && npm run test:run && vite build && npm run generate-sitemap",
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

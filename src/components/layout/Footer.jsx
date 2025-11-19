@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWebsiteConfig } from '../../hooks';
 
@@ -6,6 +6,14 @@ const Footer = () => {
   const { data: websiteData } = useWebsiteConfig();
   const websiteConfig = websiteData?.data;
   const currentYear = new Date().getFullYear();
+  const [buildInfo, setBuildInfo] = useState(null);
+
+  useEffect(() => {
+    fetch(`/build-info.json?${Date.now()}`)
+      .then(res => res.json())
+      .then(data => setBuildInfo(data))
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-gray-800 text-white mt-auto">
@@ -50,6 +58,11 @@ const Footer = () => {
 
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-400">
           <p>&copy; {currentYear} {websiteConfig?.siteName || 'Mechanics of Motherhood'}. All rights reserved.</p>
+          {buildInfo && (
+            <p className="mt-2 text-xs text-gray-500">
+              v{buildInfo.version} | Build: {new Date(buildInfo.buildDate).toLocaleString()}
+            </p>
+          )}
         </div>
       </div>
     </footer>

@@ -48,10 +48,12 @@ const WEBSITE_ID = 2;
 const cacheDir = join(__dirname, '..', 'data');
 const cachedRecipesPath = join(cacheDir, 'api-recipes-cache.json');
 const cachedMenuPath = join(cacheDir, 'api-menu-cache.json');
+const cachedWebsitePath = join(cacheDir, 'api-website-cache.json');
 
 // Fallback to src/data if cache doesn't exist
 const localRecipesPath = join(__dirname, '..', 'src', 'data', 'recipes-list.json');
 const localMenuPath = join(__dirname, '..', 'src', 'data', 'menu-hierarchy.json');
+const localWebsitePath = join(__dirname, '..', 'src', 'data', 'website-config.json');
 
 /**
  * Ensure cache directory exists
@@ -246,6 +248,43 @@ function loadLocalMenu() {
 }
 
 /**
+ * Load website config from cache or local JSON file
+ */
+function loadLocalWebsite() {
+  // Try cache first
+  try {
+    if (existsSync(cachedWebsitePath)) {
+      const data = readFileSync(cachedWebsitePath, 'utf-8');
+      const websiteData = JSON.parse(data);
+      
+      if (websiteData.success && websiteData.data) {
+        console.log('Using cached website config');
+        return websiteData.data;
+      }
+    }
+  } catch (error) {
+    console.warn('Could not load cached website config:', error.message);
+  }
+  
+  // Fall back to src/data
+  try {
+    if (existsSync(localWebsitePath)) {
+      const data = readFileSync(localWebsitePath, 'utf-8');
+      const websiteData = JSON.parse(data);
+      
+      if (websiteData.success && websiteData.data) {
+        console.log('Using local fallback website config');
+        return websiteData.data;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.warn('Could not load local website config:', error.message);
+    return null;
+  }
+}
+
+/**
  * Fetch menu items for dynamic CMS pages or use local fallback
  */
 async function fetchMenuItems() {
@@ -294,6 +333,55 @@ async function fetchMenuItems() {
 }
 
 /**
+ * Fetch website configuration or use local fallback
+ */
+async function fetchWebsiteConfig() {
+  try {
+    console.log('Fetching website configuration...');
+    console.log('Attempting to fetch from:', `${API_BASE_URL}/webcms/websites/${WEBSITE_ID}`);
+    
+    // Try API first
+    const response = await fetch(`${API_BASE_URL}/webcms/websites/${WEBSITE_ID}`);
+    
+    // Check if response is ok before parsing
+    if (!response.ok) {
+      console.warn(`API returned status ${response.status}. Using local fallback.`);
+      return loadLocalWebsite();
+    }
+    
+    // Check content type
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.warn('API did not return JSON. Using local fallback.');
+      return loadLocalWebsite();
+    }
+    
+    const data = await response.json();
+
+    if (data.success && data.data) {
+      console.log('✓ Fetched website configuration from API');
+      
+      // Cache the website config
+      saveToCache(cachedWebsitePath, {
+        success: true,
+        data: data.data,
+        message: 'Retrieved website configuration',
+        cachedAt: new Date().toISOString()
+      });
+      
+      return data.data;
+    }
+    
+    console.warn('API response format unexpected. Using local fallback.');
+    return loadLocalWebsite();
+  } catch (error) {
+    console.warn('Could not fetch website config from API:', error.message);
+    console.log('Using local website config...');
+    return loadLocalWebsite();
+  }
+}
+
+/**
  * Format date to W3C Datetime format (ISO 8601)
  */
 function formatDate(date) {
@@ -320,6 +408,9 @@ async function generateSitemap() {
 
   const now = formatDate(new Date());
   const urls = [];
+
+  // Fetch website configuration
+  await fetchWebsiteConfig();
 
   // Homepage
   urls.push(generateUrlEntry(

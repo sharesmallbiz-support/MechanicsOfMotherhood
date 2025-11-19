@@ -1,23 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
-import { getWebsiteById } from '../api';
 import { getStaticWebsiteConfig } from '../config/localContent';
-import useAppStore from '../store/appStore';
 
 /**
- * Hook to fetch and cache website configuration
+ * Hook to get website configuration from local data
+ * Data is refreshed from API during build process
  */
 export const useWebsiteConfig = () => {
-  const websiteId = useAppStore((state) => state.websiteId);
-  const fallbackData = getStaticWebsiteConfig();
-
-  return useQuery({
-    queryKey: ['website', websiteId],
-    queryFn: () => getWebsiteById(websiteId),
-    staleTime: Infinity, // Website config rarely changes
-    cacheTime: Infinity,
-    enabled: !!websiteId,
-    initialData: fallbackData ?? undefined,
-  });
+  const response = getStaticWebsiteConfig();
+  
+  return {
+    data: response, // Return the full {success, data} structure
+    isLoading: false,
+    isError: false,
+    error: null,
+  };
 };
 
 export default useWebsiteConfig;

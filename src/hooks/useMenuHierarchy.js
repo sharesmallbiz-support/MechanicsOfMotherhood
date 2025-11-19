@@ -1,22 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
-import { getMenuHierarchy } from '../api';
 import { getStaticMenuHierarchy } from '../config/localContent';
-import useAppStore from '../store/appStore';
 
 /**
- * Hook to fetch and cache menu hierarchy
+ * Hook to get menu hierarchy from local data
+ * Data is refreshed from API during build process
  */
 export const useMenuHierarchy = () => {
-  const websiteId = useAppStore((state) => state.websiteId);
-  const fallbackData = getStaticMenuHierarchy();
-
-  return useQuery({
-    queryKey: ['menuHierarchy', websiteId],
-    queryFn: () => getMenuHierarchy(websiteId),
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    enabled: !!websiteId,
-    initialData: fallbackData ?? undefined,
-  });
+  const response = getStaticMenuHierarchy();
+  
+  return {
+    data: response, // Return the full {success, data} structure
+    isLoading: false,
+    isError: false,
+    error: null,
+  };
 };
 
 export default useMenuHierarchy;

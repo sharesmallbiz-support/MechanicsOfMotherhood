@@ -1,55 +1,71 @@
-import { useQuery } from '@tanstack/react-query';
-import { getRecipes, getRecipeById, getRecipeBySlug } from '../api';
 import {
   getStaticRecipeById,
   getStaticRecipeBySlug,
   getStaticRecipesList,
 } from '../config/localContent';
 
-const shouldUseStaticRecipes = (params = {}) => {
-  const hasFilters = params.categoryId || params.searchTerm;
-  const pageNumber = params.pageNumber ?? 1;
-  const pageSize = params.pageSize ?? 20;
-  return !hasFilters && pageNumber === 1 && pageSize >= 10;
-};
-
 /**
- * Hook to fetch paginated recipes with optional filtering
+ * Hook to get paginated recipes with optional filtering from local data
+ * Data is refreshed from API during build process
  */
 export const useRecipes = (params = {}) => {
-  const fallbackData = shouldUseStaticRecipes(params) ? getStaticRecipesList() : null;
-
-  return useQuery({
-    queryKey: ['recipes', params],
-    queryFn: () => getRecipes(params),
-    initialData: fallbackData ?? undefined,
-  });
+  const allRecipes = getStaticRecipesList();
+  
+  // Apply filters if provided
+  let filteredData = allRecipes?.data || [];
+  
+  if (params.categoryId) {
+    filteredData = filteredData.filter(
+      (recipe) => recipe.recipeCategory?.id === Number(params.categoryId)
+    );
+  }
+  
+  if (params.searchTerm) {
+    const searchLower = params.searchTerm.toLowerCase();
+    filteredData = filteredData.filter(
+      (recipe) =>
+        recipe.title?.toLowerCase().includes(searchLower) ||
+        recipe.description?.toLowerCase().includes(searchLower)
+    );
+  }
+  
+  // Apply pagination if pageSize is provided
+  if (params.pageSize) {
+    filteredData = filteredData.slice(0, params.pageSize);
+  }
+  
+  return {
+    data: { success: true, data: filteredData },
+    isLoading: false,
+    isError: false,
+    error: null,
+  };
 };
 
 /**
- * Hook to fetch a single recipe by ID
+ * Hook to get a single recipe by ID from local data
  */
 export const useRecipe = (id) => {
-  const fallbackData = getStaticRecipeById(id);
-
-  return useQuery({
-    queryKey: ['recipe', id],
-    queryFn: () => getRecipeById(id),
-    enabled: !!id, // Only run if ID is provided
-    initialData: fallbackData ?? undefined,
-  });
+  const response = getStaticRecipeById(id);
+  
+  return {
+    data: response, // Return the full {success, data} structure
+    isLoading: false,
+    isError: !response,
+    error: response ? null : new Error('Recipe not found'),
+  };
 };
 
 /**
- * Hook to fetch a single recipe by slug (SEO-friendly URL)
+ * Hook to get a single recipe by slug from local data
  */
 export const useRecipeBySlug = (slug) => {
-  const fallbackData = getStaticRecipeBySlug(slug);
-
-  return useQuery({
-    queryKey: ['recipe', 'slug', slug],
-    queryFn: () => getRecipeBySlug(slug),
-    enabled: !!slug, // Only run if slug is provided
-    initialData: fallbackData ?? undefined,
-  });
+  const response = getStaticRecipeBySlug(slug);
+  
+  return {
+    data: response, // Return the full {success, data} structure
+    isLoading: false,
+    isError: !response,
+    error: response ? null : new Error('Recipe not found'),
+  };
 };

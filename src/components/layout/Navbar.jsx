@@ -13,8 +13,8 @@ const Navbar = () => {
   // menuData.data is already an array, not an object with .items
   const menuItems = menuData?.data || [];
 
-  // Filter menu items for navigation
-  const navItems = menuItems.filter((item) => item.display_navigation);
+  // Filter menu items for navigation (check both camelCase and snake_case for compatibility)
+  const navItems = menuItems.filter((item) => item.displayInNavigation ?? item.display_navigation);
 
   // API already provides hierarchical structure with nested children
   // Just use the top-level items (they already have their children nested)
@@ -45,8 +45,12 @@ const Navbar = () => {
 
   const renderDesktopMenuItem = (item) => {
     const hasChildren = item.children && item.children.length > 0;
+    // Filter children for navigation display
+    const visibleChildren = hasChildren
+      ? item.children.filter((child) => child.displayInNavigation ?? child.display_navigation)
+      : [];
 
-    if (!hasChildren) {
+    if (visibleChildren.length === 0) {
       return (
         <Link
           key={item.id}
@@ -96,7 +100,7 @@ const Navbar = () => {
               </Link>
               <div className="border-t border-gray-100" />
               {/* Child links */}
-              {item.children.map((child) => (
+              {visibleChildren.map((child) => (
                 <Link
                   key={child.id}
                   to={child.url ? `/${child.url}` : '/'}
@@ -115,8 +119,12 @@ const Navbar = () => {
 
   const renderMobileMenuItem = (item) => {
     const hasChildren = item.children && item.children.length > 0;
+    // Filter children for navigation display
+    const visibleChildren = hasChildren
+      ? item.children.filter((child) => child.displayInNavigation ?? child.display_navigation)
+      : [];
 
-    if (!hasChildren) {
+    if (visibleChildren.length === 0) {
       return (
         <Link
           key={item.id}
@@ -163,7 +171,7 @@ const Navbar = () => {
             >
               {item.title} Home
             </Link>
-            {item.children.map((child) => (
+            {visibleChildren.map((child) => (
               <Link
                 key={child.id}
                 to={child.url ? `/${child.url}` : '/'}
